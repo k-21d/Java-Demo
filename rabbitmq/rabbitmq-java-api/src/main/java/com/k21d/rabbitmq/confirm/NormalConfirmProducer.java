@@ -26,14 +26,14 @@ public class NormalConfirmProducer {
 
         String msg = "Hello, RabbitMQ , Normal Confirm";
         //声明消息队列（默认交换机AMQP default， Direct）
-        channel.queueDeclare(QUEUE_NAME,false,false,false,null);
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
         //开启发送方确认模式
         channel.confirmSelect();
 
-        channel.basicPublish("",QUEUE_NAME, null, msg.getBytes());
+        channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
         //普通Confirm，发送一条，确认一条
-        if (channel.waitForConfirms()){
+        if (channel.waitForConfirms()) {
             System.out.println("消息发送成功");
         }
         channel.close();

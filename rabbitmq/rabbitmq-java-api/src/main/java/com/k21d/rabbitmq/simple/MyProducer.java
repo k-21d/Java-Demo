@@ -29,7 +29,7 @@ public class MyProducer {
 
         //发送消息
         String msg = "hello, rabbit mq";
-        channel.basicPublish(EXCHANGE_NAME, "k21d.test",null,msg.getBytes());
+        channel.basicPublish(EXCHANGE_NAME, "k21d.test", null, msg.getBytes());
         channel.close();
         connection.close();
     }

@@ -26,11 +26,11 @@ public class TTLProducer {
         String msg = "Hello Rabbit MQ, DLX MSG";
 
         //痛殴对立属性设置消息过期时间
-        Map<String,Object> argsMap = new HashMap<>();
-        argsMap.put("x-message-ttl",6000);
+        Map<String, Object> argsMap = new HashMap<>();
+        argsMap.put("x-message-ttl", 6000);
 
         //声明队列（默认交换机AMQP default， Direct）
-        channel.queueDeclare("TEST_TTL_QUEUE",false,false,false,argsMap);
+        channel.queueDeclare("TEST_TTL_QUEUE", false, false, false, argsMap);
 
         //对每条消息设置过期时间
         AMQP.BasicProperties properties = new AMQP.BasicProperties().builder()
@@ -41,7 +41,7 @@ public class TTLProducer {
         //此处联众方式设置消息过期时间的方式都使用了，将以较小都数值为准
 
         //发送消息
-        channel.basicPublish("","TEST_DLX_QUEUE", properties, msg.getBytes());
+        channel.basicPublish("", "TEST_DLX_QUEUE", properties, msg.getBytes());
 
         channel.close();
         connection.close();

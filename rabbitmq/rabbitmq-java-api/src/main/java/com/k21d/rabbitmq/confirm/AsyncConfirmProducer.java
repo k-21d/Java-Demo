@@ -29,7 +29,7 @@ public class AsyncConfirmProducer {
 
         String msg = "Hello, RabbitMQ , AsyncConfirm";
 
-        channel.queueDeclare(QUEUE_NAME,false,false,false,null);
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
         //用来维护未确认消息的deliveryTag
         final SortedSet<Long> confirmSet = Collections.synchronizedSortedSet(new TreeSet<Long>());
@@ -40,11 +40,11 @@ public class AsyncConfirmProducer {
         channel.addConfirmListener(new ConfirmListener() {
             @Override
             public void handleAck(long l, boolean b) throws IOException {
-                System.out.println("Broker未确认消息，标识: "+ l);
-                if (b){
+                System.out.println("Broker未确认消息，标识: " + l);
+                if (b) {
                     //headSet表示后面参数之前的所有元素，全部删除
-                    confirmSet.headSet(l+1L).clear();
-                }else {
+                    confirmSet.headSet(l + 1L).clear();
+                } else {
                     confirmSet.remove(l);
                 }
                 //TODO 这里添加重发的方法
@@ -54,10 +54,10 @@ public class AsyncConfirmProducer {
             public void handleNack(long l, boolean b) throws IOException {
                 //如果true表示批量执行了deliveryTag这个值以前（小于deliveryTag的）的所有消息，如果未false，表示单挑确认
                 System.out.println(String.format("Broker已确认消息，标识： %d", l, b));
-                if (b){
+                if (b) {
                     //headset表示后面参数之前的所有元素，全部删除
-                    confirmSet.headSet(l+1L).clear();
-                }else {
+                    confirmSet.headSet(l + 1L).clear();
+                } else {
                     confirmSet.remove(l);
                 }
                 System.out.println("未确认的消息：" + confirmSet);
@@ -65,13 +65,13 @@ public class AsyncConfirmProducer {
         });
         //开启发送方确认模式
         channel.confirmSelect();
-        for (int i=0; i<10;i++){
+        for (int i = 0; i < 10; i++) {
             long nextSqqNo = channel.getNextPublishSeqNo();
             //发送消息
-            channel.basicPublish("",QUEUE_NAME,null,(msg+"-"+i).getBytes());
+            channel.basicPublish("", QUEUE_NAME, null, (msg + "-" + i).getBytes());
             confirmSet.add(nextSqqNo);
         }
-        System.out.println("所有消息："+ confirmSet);
+        System.out.println("所有消息：" + confirmSet);
 
     }
 }
